@@ -1,6 +1,7 @@
 ;
 ; ld.asm - load demonstration
 ; use with ld_data.asm
+; in class example - june 22
 ;
 
 .ORIG x3000

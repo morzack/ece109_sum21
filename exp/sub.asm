@@ -1,5 +1,6 @@
 ;
 ; sub.asm - Performs subtraction between 2 single-digit, user-entered values.
+; in class example - june 22
 ;
 
 ; R4 - minuend

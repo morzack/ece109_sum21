@@ -1,5 +1,6 @@
 ;
 ; ld_data.asm - data for ld.asm
+; in class example - june 22
 ;
 
 .ORIG x4000
