@@ -33,9 +33,9 @@
         AND R1, R1, #0  ; clear R1
         NOT R3, R3
         ADD R3, R3, #1  ; negated R3
-DIV     ADD R4, R4, R3  ; R4 = R4 - R3
-        ADD R1, R1, #1  ; increment R1
-        ADD R2, R4, R3  ; R2 = R4 - R3
+DIV     ADD R4, R4, R3  ; continually subtract divisor R3 from dividend R4
+        ADD R1, R1, #1  ; increment our quotient R1
+        ADD R2, R4, R3  ; check if we can subtract divisor again
         BRzp DIV
 
         ; Output quotient/remainder - convert to ascii (only works for single digit)

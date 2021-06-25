@@ -37,10 +37,10 @@
         OUT             ; output a Space
 
         ; check operation type - '+' = x2B or '-' = x2D
-        LD R6, DASH
+        LD R6, MINUS
         NOT R6, R6,
         ADD R6, R6, #1  ; negate '-'
-        ADD R5, R5, R6  ; subtract '-' from
+        ADD R6, R5, R6  ; subtract '-' from
         BRn ADDIT
 
         ; perform subtraction R1 = R4 - R3

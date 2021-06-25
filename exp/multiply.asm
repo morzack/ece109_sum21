@@ -30,7 +30,7 @@
 
         ; Perform multiplication
         AND R2, R2, #0  ; clear R2
-MULT    ADD R2, R2, R4  ; add R4 to R2 accumulator
+MULT    ADD R2, R2, R4  ; add R4 (factor 1) to R2 accumulator
         ADD R3, R3, #-1 ; subtract one from R3 (factor 2)
         BRp MULT        ; more additions remaining, repeat
 
