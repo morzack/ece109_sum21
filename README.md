@@ -16,26 +16,25 @@ PennSim Release - https://mjdargen.github.io/ece109_sum21/dist.html
 
 ## Repository Overview
 ```
-|-- docs                    -   Directory for PennSim LC3 Simulator documentation
-|   |-- code                -   Directory with code in docs
-|       |-- lc3os.asm       -   LC-3 OS code
-|       |-- p0.asm          -   Problem 0 code
-|   |-- dist.html           -   PennSim Releases Page
-|   |-- guide.html          -   PennSim Quick Guide
-|   |-- manual.html         -   PennSim Manual
-|   |-- pennsim.png         -   PennSim Screenshot
-|-- exp                     -   Directory with example code from class
-|   |-- countOnes.asm       -   Counts one in ASCII characters.
-|-- p0                      -   Directory for Program 0
-|-- p1                      -   Directory for Program 1
-|-- p2                      -   Directory for Program 2
-|-- p3                      -   Directory for Program 3
-|-- cleanup.py              -   Python script to remove all .sym & .obj files
-|-- lc3os.asm               -   LC-3 OS - handles i/o and runs your program
-|-- lc3os.obj               -   LC-3 OS object file
-|-- lc3os.sym               -   LC-3 OS symbol file
-|-- PennSim.jar             -   LC-3 Simulator, Java executable
-|-- README.md               -   Repo Overview
+|-- docs                 -   Directory for PennSim LC3 Simulator documentation
+|   |-- code             -   Directory with code in docs
+|       |-- lc3os.asm    -   LC-3 OS code
+|       |-- p0.asm       -   Problem 0 code
+|   |-- dist.html        -   PennSim Releases Page
+|   |-- guide.html       -   PennSim Quick Guide
+|   |-- manual.html      -   PennSim Manual
+|   |-- pennsim.png      -   PennSim Screenshot
+|-- exp                  -   Directory with example code from class
+|-- p0                   -   Directory for Program 0
+|-- p1                   -   Directory for Program 1
+|-- p2                   -   Directory for Program 2
+|-- p3                   -   Directory for Program 3
+|-- cleanup.py           -   Python script to remove all .sym & .obj files
+|-- lc3os.asm            -   LC-3 OS - handles i/o and runs your program
+|-- lc3os.obj            -   LC-3 OS object file
+|-- lc3os.sym            -   LC-3 OS symbol file
+|-- PennSim.jar          -   LC-3 Simulator, Java executable
+|-- README.md            -   Repo Overview
 ```
 
 ## Code Editors
