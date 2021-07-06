@@ -28,15 +28,15 @@
         LD R0, SP       ; load a Space
         OUT             ; output a Space
 
-        ; Perform multiplication
-        AND R2, R2, #0  ; clear R2
-MULT    ADD R2, R2, R4  ; add R4 (factor 1) to R2 accumulator
+        ; perform multiplication R1 = R4 * R3
+        AND R1, R1, #0  ; clear R1
+MULT    ADD R1, R1, R4  ; add R4 (factor 1) to R1 accumulator
         ADD R3, R3, #-1 ; subtract one from R3 (factor 2)
         BRp MULT        ; more additions remaining, repeat
 
         ; Output product - convert to ascii (only works for single digit)
-        LD R1, ZERO     ; load ASCII Base for zero
-        ADD R0, R1, R2  ; add ASCII Offset to count
+        LD R0, ZERO     ; load ASCII Base for zero
+        ADD R0, R0, R1  ; add ASCII Offset to count
         OUT             ; output count to console
         LD R0, LF       ; load Linefeed
         OUT             ; output Linefeed

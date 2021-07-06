@@ -1,5 +1,5 @@
 ;
-; division - Performs dvision between 2 single-digit, user-entered values.
+; division - Performs division between 2 single-digit, user-entered values.
 ; in class example - june 29
 ;
 
