@@ -38,7 +38,7 @@
 ; Description: performs multiplication between two values - R1 = R3 * R4
 ; Inputs: R3 - factor 1, R4 - factor 2
 ; Outputs: R1 - product
-DIVIDE  ST R2, D_R2    ; store register values
+DIVIDE  ST R2, D_R2    ; save register values
         ST R3, D_R3
         ST R4, D_R4
 
@@ -52,7 +52,7 @@ DIV     ADD R4, R4, R3  ; continually subtract divisor R3 from dividend R4
         ADD R2, R4, R3  ; check if we can subtract divisor again
         BRzp DIV        ; repeat subtraction for division
 
-        LD R2, D_R2     ; reload register values
+        LD R2, D_R2     ; restore register values
         LD R3, D_R3
         LD R4, D_R4
         RET             ; return
@@ -65,7 +65,7 @@ D_R4    .BLKW 1
 ; Description: converts 1-2 digit integer to ASCII char and prints to console.
 ; Input: R1 - integer value to convert
 ; Output: No registers. Prints resulting ASCII characters to console.
-INT2CHR ST R2, CONV_R2
+INT2CHR ST R2, CONV_R2  ; save register values
         ST R3, CONV_R3
         ST R4, CONV_R4
         ST R5, CONV_R5
@@ -107,7 +107,7 @@ ONEDIG  LD R0, ZERO     ; load ascii offset
 
 STOP    LD R0, LF       ; load linefeed
         OUT
-        LD R2, CONV_R2
+        LD R2, CONV_R2  ; restore register values
         LD R3, CONV_R3
         LD R4, CONV_R4
         LD R5, CONV_R5

@@ -32,12 +32,13 @@
         ; perform exponentiation R1 = R4 ^ R3
         AND R1, R1, #0  ; clear R1
         ADD R1, R1, #1  ; R1=1 initially in case raised to the power 0
-        ADD R2, R3, #-1 ; copy R3 to R2 - counter for repeats
+        ADD R2, R3, #0  ; copy R3 to R2 - counter for repeats
         BRz END         ; if exponent is zero
         ADD R3, R4, #0  ; copy R4 to R3 - factor 2 for multiplication
+        ADD R2, R2, #1  ; decrement exponent counter, starting with R4^1
 REPEAT  JSR MULTIPLY    ; call multiplication subroutine
         ADD R4, R1, #0  ; copy R1 to R4
-        ADD R2, R2, #-1 ; subtract one from exponent
+        ADD R2, R2, #-1 ; decrement exponent counter
         BRp REPEAT      ; repeat if not zero
 
         ; Output product - convert to ascii (only works for single digit)
@@ -49,7 +50,7 @@ END     JSR INT2CHR     ; call subroutine to convert 1/2 digit int to char
 ; Description: performs multiplication between two values - R1 = R3 * R4
 ; Inputs: R3 - factor 1, R4 - factor 2
 ; Outputs: R1 - product
-MULTIPLY ST R3, M_R3    ; store register values
+MULTIPLY ST R3, M_R3    ; save register values
         ST R4, M_R4
 
         ; perform multiplication
@@ -58,7 +59,7 @@ MULT    ADD R1, R1, R4  ; add R4 (factor 1) to R1 accumulator
         ADD R3, R3, #-1 ; subtract one from R3 (factor 2)
         BRp MULT        ; more additions remaining, repeat
 
-        LD R3, M_R3     ; reload register values
+        LD R3, M_R3     ; restore register values
         LD R4, M_R4
         RET             ; return
 
@@ -69,7 +70,7 @@ M_R4    .BLKW 1
 ; Description: converts 1-2 digit integer to ASCII char and prints to console.
 ; Input: R1 - integer value to convert
 ; Output: No registers. Prints resulting ASCII characters to console.
-INT2CHR ST R2, CONV_R2
+INT2CHR ST R2, CONV_R2  ; save register values
         ST R3, CONV_R3
         ST R4, CONV_R4
         ST R5, CONV_R5
@@ -110,7 +111,7 @@ ONEDIG  LD R0, ZERO     ; load ascii offset
 
 STOP    LD R0, LF       ; load linefeed
         OUT
-        LD R2, CONV_R2
+        LD R2, CONV_R2  ; restore register values
         LD R3, CONV_R3
         LD R4, CONV_R4
         LD R5, CONV_R5
