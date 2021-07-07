@@ -58,7 +58,8 @@ M_R4    .BLKW 1
 ; Description: converts 1-2 digit integer to ASCII char and prints to console.
 ; Input: R1 - integer value to convert
 ; Output: No registers. Prints resulting ASCII characters to console.
-INT2CHR ST R2, CONV_R2  ; save registers
+INT2CHR ST R0, CONV_R0  ; save register values
+        ST R2, CONV_R2
         ST R3, CONV_R3
         ST R4, CONV_R4
         ST R5, CONV_R5
@@ -99,7 +100,8 @@ ONEDIG  LD R0, ZERO     ; load ascii offset
 
 STOP    LD R0, LF       ; load linefeed
         OUT
-        LD R2, CONV_R2  ; restore registers
+        LD R0, CONV_R0  ; restore register values
+        LD R2, CONV_R2
         LD R3, CONV_R3
         LD R4, CONV_R4
         LD R5, CONV_R5
@@ -107,12 +109,13 @@ STOP    LD R0, LF       ; load linefeed
         LD R7, CONV_R7  ; calls OUT subroutine! restore R7
         RET
 
-CONV_R2    .BLKW 1
-CONV_R3    .BLKW 1
-CONV_R4    .BLKW 1
-CONV_R5    .BLKW 1
-CONV_R6    .BLKW 1
-CONV_R7    .BLKW 1
+CONV_R0 .BLKW 1
+CONV_R2 .BLKW 1
+CONV_R3 .BLKW 1
+CONV_R4 .BLKW 1
+CONV_R5 .BLKW 1
+CONV_R6 .BLKW 1
+CONV_R7 .BLKW 1
 
 SP      .FILL x0020     ; ASCII representation of a space ' '
 ZERO    .FILL x0030     ; ASCII offset for ASCII->Integer conversions

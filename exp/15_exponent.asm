@@ -35,7 +35,7 @@
         ADD R2, R3, #0  ; copy R3 to R2 - counter for repeats
         BRz END         ; if exponent is zero
         ADD R3, R4, #0  ; copy R4 to R3 - factor 2 for multiplication
-        ADD R2, R2, #1  ; decrement exponent counter, starting with R4^1
+        ADD R2, R2, #-1 ; decrement exponent counter, starting with R4^1
 REPEAT  JSR MULTIPLY    ; call multiplication subroutine
         ADD R4, R1, #0  ; copy R1 to R4
         ADD R2, R2, #-1 ; decrement exponent counter
@@ -70,7 +70,8 @@ M_R4    .BLKW 1
 ; Description: converts 1-2 digit integer to ASCII char and prints to console.
 ; Input: R1 - integer value to convert
 ; Output: No registers. Prints resulting ASCII characters to console.
-INT2CHR ST R2, CONV_R2  ; save register values
+INT2CHR ST R0, CONV_R0  ; save register values
+        ST R2, CONV_R2
         ST R3, CONV_R3
         ST R4, CONV_R4
         ST R5, CONV_R5
@@ -111,7 +112,8 @@ ONEDIG  LD R0, ZERO     ; load ascii offset
 
 STOP    LD R0, LF       ; load linefeed
         OUT
-        LD R2, CONV_R2  ; restore register values
+        LD R0, CONV_R0  ; restore register values
+        LD R2, CONV_R2
         LD R3, CONV_R3
         LD R4, CONV_R4
         LD R5, CONV_R5
@@ -119,12 +121,13 @@ STOP    LD R0, LF       ; load linefeed
         LD R7, CONV_R7  ; calls OUT subroutine! restore R7
         RET
 
-CONV_R2    .BLKW 1
-CONV_R3    .BLKW 1
-CONV_R4    .BLKW 1
-CONV_R5    .BLKW 1
-CONV_R6    .BLKW 1
-CONV_R7    .BLKW 1
+CONV_R0 .BLKW 1
+CONV_R2 .BLKW 1
+CONV_R3 .BLKW 1
+CONV_R4 .BLKW 1
+CONV_R5 .BLKW 1
+CONV_R6 .BLKW 1
+CONV_R7 .BLKW 1
 
 SP      .FILL x0020     ; ASCII representation of a space ' '
 ZERO    .FILL x0030     ; ASCII offset for ASCII->Integer conversions

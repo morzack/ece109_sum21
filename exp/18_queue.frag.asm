@@ -9,8 +9,13 @@
 ; NOTE: Not an actual program, just a passage of code!
 ;
 
-.ORIG x3000
-
+; --------------------- INSERT/REMOVE QUEUE SUBROUTINES ---------------------- ;
+; Description: insert/remove subroutines for queue
+; Inputs: R3 - front/head, R4 is rear/tail
+; INSERT input: R0 - value to be inserted into queue
+; Outputs: R5 - 0 (success) or 1 (failure)
+; REMOVE output: R0 - value to be remove from queue
+; NOTE: update FIRST/LAST based on start point and end point of queue
 INSERT  ST R1, Q_R1    ; save registers
         AND R5, R5, #0 ; set R5 to success code
         LD R1, NEG_LST
@@ -55,9 +60,7 @@ DONE    LD R1, Q_R1     ; restore register
 
 Q_R1    .BLKW 1
 
-FIRST   .FILL x8000 ; starting address of queue storage
-NEG_1ST .FILL x8000 ; negative of FIRST - causes overflow and will produce 0
-LAST    .FILL x8005 ; ending address of queue storage
-NEG_LST .FILL x7FFB ; negative of LAST
-
-.END
+FIRST   .FILL x8000     ; starting address of queue storage
+NEG_1ST .FILL x8000     ; negative of FIRST - causes overflow and will produce 0
+LAST    .FILL x8005     ; ending address of queue storage
+NEG_LST .FILL x7FFB     ; negative of LAST
