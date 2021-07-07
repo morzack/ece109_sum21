@@ -75,7 +75,7 @@ POP     ST R1, PP_R1    ; save registers
         BRnzp PP_SUCC
 
 PUSH    ST R1, PP_R1    ; save registers
-        ST R2, PP_R1
+        ST R2, PP_R2
         AND R5, R5, #0  ; assume no overflow
         LD R1, FULL     ; check whether R6 is at top, negative x3FFB
         ADD R1, R6, R1  ; compare stack pointer to x3FFB
@@ -86,11 +86,11 @@ PUSH    ST R1, PP_R1    ; save registers
         STR R0, R6, #0
 
 PP_SUCC LD R1, PP_R1    ; restore registers
-        LD R1, PP_R2    ; restore registers
+        LD R2, PP_R2    ; restore registers
         RET             ; return with R5=0
 
 PP_FAIL LD R1, PP_R1    ; restore registers
-        LD R1, PP_R2    ; restore registers
+        LD R2, PP_R2    ; restore registers
         ADD R5, R5, #1  ; set R5 to indicate failure
         RET             ; return with R5=1
 
