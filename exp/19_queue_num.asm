@@ -1,13 +1,49 @@
 ;
-; Subroutines for carrying out the insert and remove functions for a queue.
-; Queue begins at address x8000 and ends at address x8005. Size 5
-; Described in detail in section 8.4 pg 298.
+; queue_num.asm - use queue to store only the 5 most recent one-digit numbers.
 ;
-; Input: R0 for item to be inserted, R3 is front, R4 is rear
-; Output: R0 for item to be removed, R5 is success code
-;
-; NOTE: Not an actual program, just a passage of code!
-;
+
+.ORIG x3000
+
+        LD R3, FIRST    ; initialize front/head
+        LD R4, FIRST    ; initialize rear/tail
+
+AGAIN   GETC            ; retrieve character from user
+        ; check if LF
+        LD R1, LF       ; load linefeed
+        NOT R1, R1
+        ADD R1, R1, #1  ; negate R1 for comparison
+        ADD R1, R0, R1  ; perform comparison for LF
+        BRz END         ; found LF, branch ro end
+
+        ; check if valid number
+        LD R1, NEG_9    ; load negated ASCII '9'
+        ADD R1, R0, R1  ; compare
+        BRp AGAIN       ; if greater than ASCII '9', not valid. ignore
+        LD R1, NEG_0    ; load negated ASCII '0'
+        ADD R1, R0, R1  ; compare values
+        BRn AGAIN       ; if less than ASCII '0', not valid. ignore
+
+        ; valid number at this point so insert queue
+        OUT             ; echo back out
+        JSR INSERT      ; insert value into queue
+
+        ADD R5, R5, #0  ; check condition codes of R5 for under/overflow
+        BRnz AGAIN      ; if positive, the queue overflowed
+        ADD R1, R0, #0  ; copy value to R1
+        JSR REMOVE      ; remove a value from the queue to free up space
+        ADD R0, R1, #0  ; restore value to R0
+        JSR INSERT      ; insert value into queue
+        BRnzp AGAIN     ; unconditional branch to collect next value
+
+END     LD R0, LF       ; load LF to print
+        OUT             ; print LF
+REPEAT  JSR REMOVE      ; remove a value from the queue to free up space
+        ADD R5, R5, #0  ; check condition codes of R5 for under/overflow
+        BRp STOP        ; if positive, the queue underflowed -> done
+        OUT             ; print dequeued character
+        BRnzp REPEAT    ; unconditional branch to remove next char from queue
+
+STOP    HALT            ; halt program
 
 ; --------------------- INSERT/REMOVE QUEUE SUBROUTINES ---------------------- ;
 ; Description: insert/remove subroutines for queue.
@@ -66,3 +102,14 @@ FIRST   .FILL x4000     ; starting address of queue storage
 NEG_1ST .FILL xC000     ; negative of FIRST
 LAST    .FILL x4005     ; ending address of queue storage
 NEG_LST .FILL xBFFB     ; negative of LAST
+
+; ----------------------- RAW VALUES STORED IN MEMORY ------------------------ ;
+NUM_9   .FILL x0039     ; ASCII '9'
+NUM_0   .FILL x0030     ; ASCII '0'
+NEG_9   .FILL xFFC7     ; negated ASCII '9'
+NEG_0   .FILL xFFD0     ; negated ASCII '0'
+LF      .FILL x000A     ; ASCII representation of a linefeed '\n'
+SPACE   .FILL x0020     ; ASCII representation of a linefeed ' '
+NMSG    .STRINGZ "New message: "
+
+.END
