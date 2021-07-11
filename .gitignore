@@ -2,8 +2,11 @@
 *.sym
 *.obj
 _my/
+_util/
 !lc3os.obj
 !lc3os.sym
+!lc3os_v2.obj
+!lc3os_v2.sym
 
 
 # Byte-compiled / optimized / DLL files
