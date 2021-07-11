@@ -33,6 +33,9 @@ PennSim Release - https://mjdargen.github.io/ece109_sum21/dist.html
 |-- lc3os.asm            -   LC-3 OS - handles i/o and runs your program
 |-- lc3os.obj            -   LC-3 OS object file
 |-- lc3os.sym            -   LC-3 OS symbol file
+|-- lc3os_v2.asm         -   LC-3 OS v2 - corrected OS, (implements protected memory)
+|-- lc3os_v2.obj         -   LC-3 OS v2 object file
+|-- lc3os_v2.sym         -   LC-3 OS v2 symbol file
 |-- PennSim.jar          -   LC-3 Simulator, Java executable
 |-- README.md            -   Repo Overview
 ```

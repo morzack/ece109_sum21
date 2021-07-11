@@ -1,11 +1,14 @@
 ;
-; Subroutine for comparing strings.
-;
-; Input: R0 pointer to first string, R1 pointer to second string.
-; Output: R5=0 if they match, R5=1 if no match
-;
 ; NOTE: Not an actual program, just a passage of code!
 ;
+
+; ---------------------------- STRCMP SUBROUTINE ----------------------------- ;
+; Description: subroutine for comparing strings.
+; Inputs:
+;   R0 - pointer to first string
+;   R1 - pointer to second string
+; Outputs:
+;   R5 - 0 (match) or 1 (no match)
 
 STRCMP  ST R0, STR_R0   ; save registers
         ST R1, STR_R1
@@ -15,7 +18,7 @@ STRCMP  ST R0, STR_R0   ; save registers
 
 NXTCHAR LDR R2, R0, #0  ; char from string 1
         LDR R3, R1, #0  ; char from string 2
-        BRnp COMPARE    ; check for end of string 2 - null
+        BRnp CMP        ; check for end of string 2 - null
         ADD R2, R2, #0  ; do nothing set condition code for string 1
         BRz DONE        ; check for end of string 1 - null
 

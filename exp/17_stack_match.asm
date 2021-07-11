@@ -57,11 +57,14 @@ SUCC    LEA R0, MATCH   ; load string for successful match
 
 ; ----------------------- PUSH/POP STACK SUBROUTINES ------------------------- ;
 ; Description: push/pop subroutines for stack
-; Inputs: R6 - stack pointer
-; PUSH input: R0 - value to be pushed on stack
-; Outputs: R5 - 0 (success) or 1 (failure)
-; POP output: R0 - value popped off of stack
+; Inputs:
+;   R6 - stack pointer
+;   R0 - value to be pushed on stack (PUSH only)
+; Outputs:
+;   R5 - 0 (success) or 1 (failure)
+;   R0 - value popped off of stack (POP only)
 ; NOTE: update FULL/EMPTY based on starting point and size of stack
+
 POP     ST R1, PP_R1    ; save registers
         ST R2, PP_R2
         AND R5, R5, #0  ; assume no underflow

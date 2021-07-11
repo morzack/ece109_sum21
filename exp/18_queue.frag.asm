@@ -11,10 +11,13 @@
 
 ; --------------------- INSERT/REMOVE QUEUE SUBROUTINES ---------------------- ;
 ; Description: insert/remove subroutines for queue.
-; Inputs: R3 - front/head, R4 is rear/tail
-; INSERT input: R0 - value to be inserted into queue at rear
-; Outputs: R5 - 0 (success) or 1 (failure)
-; REMOVE output: R0 - value to be remove from queue at front
+; Inputs:
+;   R3 - front/head
+;   R4 - rear/tail
+;   R0 - value to be inserted into queue at rear (INSERT only)
+; Outputs:
+;   R5 - 0 (success) or 1 (failure)
+;   R0 - value to be remove from queue at front (REMOVE only)
 ; NOTE: update FIRST/LAST based on start point and end point of queue
 
 ; insert - increment (with wraparound) rear pointer and store value
