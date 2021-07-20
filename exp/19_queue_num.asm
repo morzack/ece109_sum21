@@ -88,7 +88,7 @@ REMOVE  ST R1, Q_R1     ; save registers
         LD R1, NEG_LST  ; not empty, load negated last
         ADD R1, R1, R3  ; R1 = front - last
         BRnp SKIP5      ; front!=last, no need to wraparound
-        LD R3, FIRST    ; wraparound, rear = first memory location
+        LD R3, FIRST    ; wraparound, front = first memory location
         BRnzp SKIP6     ; skip increment
 SKIP5   ADD R3, R3, #1  ; increment front
 SKIP6   LDR R0, R3, #0  ; perform remove

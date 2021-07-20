@@ -526,7 +526,7 @@ OS_START
 
         ; set timer interval
         LD R0, TIM_INIT
-        STI R0, OS_TMI
+        STI R0, OS_TIR
 
         ; start running user code (clear Privilege bit w/ RTT)
         LD R7, USER_CODE_ADDR
@@ -536,8 +536,8 @@ OS_KBSR         .FILL xFE00     ; keyboard status register
 OS_KBDR         .FILL xFE02     ; keyboard data register
 OS_DSR          .FILL xFE04     ; display status register
 OS_DDR          .FILL xFE06     ; display data register
-OS_TR           .FILL xFE08     ; timer register
-OS_TMI          .FILL xFE0A     ; timer interval register
+OS_TSR          .FILL xFE08     ; timer status register
+OS_TIR          .FILL xFE0A     ; timer interval register
 OS_MPR          .FILL xFE12     ; memory protection register
 OS_MCR          .FILL xFFFE     ; machine control register
 OS_PSR          .FILL xFFFC     ; processor status register
