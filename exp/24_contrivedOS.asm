@@ -526,7 +526,7 @@ OS_START
 
         ; set timer interval
         LD R0, TIM_INIT
-        STI R0, OS_TMI
+        STI R0, OS_TIR
 
         ; welcome message
         LEA R0, WELCOME_MSG
@@ -540,8 +540,8 @@ OS_KBSR         .FILL xFE00     ; keyboard status register
 OS_KBDR         .FILL xFE02     ; keyboard data register
 OS_DSR          .FILL xFE04     ; display status register
 OS_DDR          .FILL xFE06     ; display data register
-OS_TR           .FILL xFE08     ; timer register
-OS_TMI          .FILL xFE0A     ; timer interval register
+OS_TSR          .FILL xFE08     ; timer status register
+OS_TIR          .FILL xFE0A     ; timer interval register
 OS_MPR          .FILL xFE12     ; memory protection register
 OS_MCR          .FILL xFFFE     ; machine control register
 OS_PSR          .FILL xFFFC     ; processor status register
@@ -555,10 +555,9 @@ OS_SAVE_R5      .BLKW 1
 OS_SAVE_R6      .BLKW 1
 OS_SAVE_R7      .BLKW 1
 
-MASK_HI         .FILL x7FFF
-LOW_8_BITS      .FILL x00FF
-TIM_INIT        .FILL #40
+MASK_HI         .FILL x7FFF     ; mask to clear run bit
 MPR_INIT        .FILL x0FF8     ; user can access x3000 to xBFFF
+TIM_INIT        .FILL #40       ; number of milliseconds for timer
 USER_CODE_ADDR  .FILL x3000     ; user code starts at x3000
 
 ;;; BSOD - trap handler for showing BSOD - stored at x4000

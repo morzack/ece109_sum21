@@ -33,11 +33,11 @@
         .FILL BAD_TRAP          ; x1D
         .FILL BAD_TRAP          ; x1E
         .FILL BAD_TRAP          ; x1F
-        .FILL TRAP_GETC         ; x20
-        .FILL TRAP_OUT          ; x21
-        .FILL TRAP_PUTS         ; x22
-        .FILL TRAP_IN           ; x23
-        .FILL TRAP_PUTSP        ; x24
+        .FILL BAD_TRAP          ; x20 - GETC
+        .FILL BAD_TRAP          ; x21 - OUT
+        .FILL BAD_TRAP          ; x22 - PUTS
+        .FILL BAD_TRAP          ; x23 - IN
+        .FILL BAD_TRAP          ; x24 - PUTSP
         .FILL TRAP_HALT         ; x25
         .FILL BAD_TRAP          ; x26
         .FILL BAD_TRAP          ; x27
@@ -65,8 +65,8 @@
         .FILL BAD_TRAP          ; x3D
         .FILL BAD_TRAP          ; x3E
         .FILL BAD_TRAP          ; x3F
-        .FILL BAD_TRAP          ; x40
-        .FILL BAD_TRAP          ; x41
+        .FILL TRAP_GET_EVENT    ; x40
+        .FILL TRAP_OUT_NUM      ; x41
         .FILL BAD_TRAP          ; x42
         .FILL BAD_TRAP          ; x43
         .FILL BAD_TRAP          ; x44
@@ -524,9 +524,11 @@ OS_START
         LD R0, MPR_INIT
         STI R0, OS_MPR
 
+        ; *** INSERT CODE FOR PART 1 HERE ***
+        ; ~2 lines of code or so
         ; set timer interval
-        LD R0, TIM_INIT
-        STI R0, OS_TIR
+        ; change value of TIM_INIT
+        
 
         ; start running user code (clear Privilege bit w/ RTT)
         LD R7, USER_CODE_ADDR
@@ -542,124 +544,10 @@ OS_MPR          .FILL xFE12     ; memory protection register
 OS_MCR          .FILL xFFFE     ; machine control register
 OS_PSR          .FILL xFFFC     ; processor status register
 
-OS_SAVE_R0      .BLKW 1
-OS_SAVE_R1      .BLKW 1
-OS_SAVE_R2      .BLKW 1
-OS_SAVE_R3      .BLKW 1
-OS_SAVE_R4      .BLKW 1
-OS_SAVE_R5      .BLKW 1
-OS_SAVE_R6      .BLKW 1
-OS_SAVE_R7      .BLKW 1
-
 MASK_HI         .FILL x7FFF     ; mask to clear run bit
 MPR_INIT        .FILL x0FF8     ; user can access x3000 to xBFFF
-TIM_INIT        .FILL #40       ; number of milliseconds for timer
-LOW_8_BITS      .FILL x00FF     ; bitmask for PUTSP
+TIM_INIT        .FILL #1000     ; number of milliseconds for timer
 USER_CODE_ADDR  .FILL x3000     ; user code starts at x3000
-
-
-;;; GETC - Read a single character of input from keyboard device into R0
-TRAP_GETC
-        LDI R0, OS_KBSR          ; wait for a keystroke
-        BRzp TRAP_GETC
-        LDI R0, OS_KBDR          ; read it and return
-        RTT
-
-;;; OUT - Write the character in R0 to the console.
-TRAP_OUT
-        ST R1, OS_SAVE_R1       ; save R1
-TRAP_OUT_WAIT
-        LDI R1, OS_DSR          ; wait for the display to be ready
-        BRzp TRAP_OUT_WAIT
-        STI R0, OS_DDR          ; write the character and return
-        LD R1, OS_SAVE_R1       ; restore R1
-        RTT
-
-;;; PUTS - Write a NUL-terminated string of characters to the console,
-;;; starting from the address in R0.
-TRAP_PUTS
-        ST R0, OS_SAVE_R0       ; save R0, R1, and R7
-        ST R1, OS_SAVE_R1
-        ST R7, OS_SAVE_R7
-        ADD R1, R0, #0          ; move string pointer (R0) into R1
-
-TRAP_PUTS_LOOP
-        LDR R0, R1, #0          ; write characters in string using OUT
-        BRz TRAP_PUTS_DONE
-        JSR __OUT
-        ADD R1, R1, #1
-        BRnzp TRAP_PUTS_LOOP
-
-TRAP_PUTS_DONE
-        LD R0, OS_SAVE_R0        ; restore R0, R1, and R7
-        LD R1, OS_SAVE_R1
-        LD R7, OS_SAVE_R7
-        RTT
-
-;;; IN - prompt the user for a single character input, which is stored
-;;; in R0 and also echoed to the console.
-TRAP_IN
-        ST R7, OS_SAVE_R7       ; save R7 (don't save R0, since we overwrite)
-        LEA R0, TRAP_IN_MSG     ; prompt for input
-        JSR __PUTS
-        JSR __GETC              ; read a character
-        JSR __OUT               ; echo back to monitor
-        ST R0, OS_SAVE_R0       ; save the character
-        AND R0, R0, #0          ; write a linefeed, too
-        ADD R0, R0, #10
-        JSR __OUT
-        LD R0, OS_SAVE_R0       ; restore the character
-        LD R7, OS_SAVE_R7       ; restore R7
-        RTT                     ; this doesn't work, because
-
-;;; PUTSP - Write a NUL-terminated string of characters, packed 2 per
-;;; memory location, to the console, starting from the address in R0.
-TRAP_PUTSP
-        ; NOTE: This trap will end when it sees any NUL, even in
-        ; packed form, despite the P&P second edition's requirement
-        ; of a double NUL.
-
-        ST R0, OS_SAVE_R0       ; save R0, R1, R2, R3, and R7
-        ST R1, OS_SAVE_R1
-        ST R2, OS_SAVE_R2
-        ST R3, OS_SAVE_R3
-        ST R7, OS_SAVE_R7
-        ADD R1, R0, #0          ; move string pointer (R0) into R1
-
-TRAP_PUTSP_LOOP
-        LDR R2, R1, #0          ; read the next two characters
-        LD R0, LOW_8_BITS       ; use mask to get low byte
-        AND R0, R0, R2          ; if low byte is NUL, quit printing
-        BRz TRAP_PUTSP_DONE
-        JSR __OUT               ; otherwise print the low byte
-
-        AND R0, R0, #0          ; shift high byte into R0
-        ADD R3, R0, #8
-TRAP_PUTSP_S_LOOP
-        ADD R0, R0, R0          ; shift R0 left
-        ADD R2, R2, #0          ; move MSB from R2 into R0
-        BRzp TRAP_PUTSP_MSB_0
-        ADD R0, R0, #1
-TRAP_PUTSP_MSB_0
-        ADD R2, R2, R2          ; shift R2 left
-        ADD R3, R3, #-1
-        BRp TRAP_PUTSP_S_LOOP
-
-        ADD R0, R0, #0          ; if high byte is NUL, quit printing
-        BRz TRAP_PUTSP_DONE
-        JSR __OUT               ; otherwise print the low byte
-
-        ADD R1, R1, #1          ; and keep going
-        BRnzp TRAP_PUTSP_LOOP
-
-TRAP_PUTSP_DONE
-        LD R0, OS_SAVE_R0       ; restore R0, R1, R2, R3, and R7
-        LD R1, OS_SAVE_R1
-        LD R2, OS_SAVE_R2
-        LD R3, OS_SAVE_R3
-        LD R7, OS_SAVE_R7
-        RTT
-
 
 ;;; HALT - trap handler for halting machine
 TRAP_HALT
@@ -683,14 +571,101 @@ BAD_INT
         RTI
 
 
-; ------------------------- INTERNAL OS SUBROUTINES -------------------------- ;
-; internal GETC subroutine to return to an OS service routine
-__GETC
-        LDI R0, OS_KBSR          ; wait for a keystroke
-        BRzp __GETC
-        LDI R0, OS_KBDR          ; read it and return
-        RET
+; ------------------------------ GET_EVENT x40 ------------------------------- ;
+; Description: waits for timer tick, decrements counter varible and retursn
+; Input
+;   None
+; Output
+;   r5: countdown value
+TRAP_GET_EVENT
+        ; save registers
+        ST R0, GT_R0
+        ST R1, GT_R1
+        ST R2, GT_R2
+        ST R3, GT_R3
+        ST R4, GT_R4
+        ; don't save R5 because it holds the return value
+        ST R6, GT_R6
+        ST R7, GT_R7
 
+        ; *** INSERT CODE FOR PART 2 HERE ***
+        ; ~15 lines of code or so
+
+
+        ; restore registers
+EVT_END LD R0, GT_R0
+        LD R1, GT_R1
+        LD R2, GT_R2
+        LD R3, GT_R3
+        LD R4, GT_R4
+        ; don't restore R5 because it holds the return value
+        LD R6, GT_R6
+        LD R7, GT_R7
+
+        RTT
+
+; register storage
+GT_R0    .BLKW 1
+GT_R1    .BLKW 1
+GT_R2    .BLKW 1
+GT_R3    .BLKW 1
+GT_R4    .BLKW 1
+; no R5
+GT_R6    .BLKW 1
+GT_R7    .BLKW 1
+
+; constants and variables:
+COUNTDOWN   .FILL x000A
+; LOWER_Q     .FILL x0071
+LOWER_Q     .FILL xFF8F
+
+; ------------------------------- OUT_NUM x41 -------------------------------- ;
+; Description: converts a one-digit integer value to ASCII and shows on console
+; Input
+;   r0: integer value to be converted and displayed
+; Output
+;   Output to the console/monitor
+TRAP_OUT_NUM
+        ; save registers
+        ST R0, ON_R0
+        ST R1, ON_R1
+        ST R2, ON_R2
+        ST R3, ON_R3
+        ST R4, ON_R4
+        ST R5, ON_R5
+        ST R6, ON_R6
+        ST R7, ON_R7
+
+        ; *** INSERT CODE FOR PART 3 HERE ***
+        ; ~5 lines of code or so
+
+
+        ; restore registers
+        LD R0, ON_R0
+        LD R1, ON_R1
+        LD R2, ON_R2
+        LD R3, ON_R3
+        LD R4, ON_R4
+        LD R5, ON_R5
+        LD R6, ON_R6
+        LD R7, ON_R7
+
+        RTT
+
+; register storage
+ON_R0    .BLKW 1
+ON_R1    .BLKW 1
+ON_R2    .BLKW 1
+ON_R3    .BLKW 1
+ON_R4    .BLKW 1
+ON_R5    .BLKW 1
+ON_R6    .BLKW 1
+ON_R7    .BLKW 1
+
+; constants and variables:
+ASCII_OFFSET .FILL x0030
+
+; ------------------------- INTERNAL OS SUBROUTINES -------------------------- ;
 ; internal OUT subroutine to return to an OS service routine
 __OUT
         ST R1, __OUT_SAVE_R1    ; save R1
@@ -701,13 +676,11 @@ __OUT_WAIT
         LD R1, __OUT_SAVE_R1    ; restore R1
         RET
 
-__OUT_SAVE_R1   .BLKW 1
-
 ; internal PUTS subroutine to return to an OS service routine
 __PUTS
-        ST R0, __PUTS_SAVE_R0   ; save R0, R1, and R7
-        ST R1, __PUTS_SAVE_R1
-        ST R7, __PUTS_SAVE_R7
+        ST R0, __OS_SAVE_R0     ; save R0, R1, and R7
+        ST R1, __OS_SAVE_R1
+        ST R7, __OS_SAVE_R7
         ADD R1, R0, #0          ; move string pointer (R0) into R1
 
 __PUTS_LOOP
@@ -718,16 +691,16 @@ __PUTS_LOOP
         BRnzp __PUTS_LOOP
 
 __PUTS_DONE
-        LD R0, __PUTS_SAVE_R0   ; restore R0, R1, and R7
-        LD R1, __PUTS_SAVE_R1
-        LD R7, __PUTS_SAVE_R7
+        LD R0, __OS_SAVE_R0     ; restore R0, R1, and R7
+        LD R1, __OS_SAVE_R1
+        LD R7, __OS_SAVE_R7
         RET
 
-__PUTS_SAVE_R0  .BLKW 1
-__PUTS_SAVE_R1  .BLKW 1
-__PUTS_SAVE_R7  .BLKW 1
+__OS_SAVE_R0    .BLKW 1
+__OS_SAVE_R1    .BLKW 1
+__OS_SAVE_R7    .BLKW 1
+__OUT_SAVE_R1   .BLKW 1
 
-TRAP_IN_MSG     .STRINGZ "\nInput a character> "
 HALT_MSG        .STRINGZ "\nProcessor halted.\n"
 
 .END
