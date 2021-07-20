@@ -1,0 +1,21 @@
+# clear
+check reset
+script p3/test/p1-test1.lcs
+script p3/test/p1-test2.lcs
+script p3/test/p1-test3.lcs
+script p3/test/p2-test1.lcs
+script p3/test/p3-test1.lcs
+script p3/test/p4-test1.lcs
+script p3/test/p5-test1.lcs
+# script p3/test/p6-test1.lcs
+# script p3/test/p6-test2.lcs
+# script p3/test/p6-test3.lcs
+# script p3/test/p6-test4.lcs
+# script p3/test/p6-test5.lcs
+# script p3/test/p6-test6.lcs
+# script p3/test/p7-test1.lcs
+# script p3/test/p7-test2.lcs
+# script p3/test/p7-test3.lcs
+# script p3/test/p7-test4.lcs
+# script p3/test/p7-test5.lcs
+check cumulative

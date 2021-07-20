@@ -1,0 +1,51 @@
+script p3/test/snake.lcs
+as p3/test/p1-test1.asm
+load p3/test/p1-test1.obj
+break set x3000
+continue
+set pc x6000
+set r3 PLACE_RANDOM_APPLE
+
+next
+
+next
+set r0 x2d
+set r1 x53
+next
+next
+list pc
+check r4 0
+
+next
+set r0 x45
+set r1 x6e
+next
+next
+list pc
+check r4 0
+
+next
+set r0 x54
+set r1 x31
+next
+next
+list pc
+check r4 0
+
+next
+set r0 x5e
+set r1 x45
+next
+next
+list pc
+check r4 0
+
+next
+set r0 x6d
+set r1 x69
+next
+next
+list pc
+check r4 0
+
+check count

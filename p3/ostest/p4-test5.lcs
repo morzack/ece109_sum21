@@ -1,0 +1,22 @@
+script p3/ostest/commands.lcs
+as p3/ostest/p4-test5.asm
+load p3/ostest/p4-test5.obj
+break set x3000
+continue
+set xFE0A x0
+set xFE08 x0
+set r6 xBFFF
+input p3/ostest/p4-test5.in
+
+next
+list pc
+check r5 1
+
+next
+list pc
+check r5 -1
+
+next
+list pc
+check r5 3
+check count

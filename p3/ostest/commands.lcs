@@ -1,0 +1,3 @@
+reset
+as p3/snakeOS.asm
+ld p3/snakeOS.obj

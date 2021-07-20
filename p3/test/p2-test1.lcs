@@ -1,0 +1,32 @@
+script p3/test/snake.lcs
+as p3/test/p2-test1.asm
+load p3/test/p2-test1.obj
+break set x3000
+continue
+set pc x6000
+set r1 ENQUEUE_POS
+
+break set x600F
+break set x601A
+continue
+
+check MY_TEST_SNAKE 2
+check R2 1
+check R3 2
+continue
+
+check MY_TEST_SNAKE 4
+check R2 3
+check R3 4
+continue
+
+check MY_TEST_SNAKE 6
+check R2 5
+check R3 6
+continue
+
+check MY_TEST_SNAKE 0
+check R2 7
+check R3 8
+
+check count

@@ -1,0 +1,39 @@
+script p3/test/snake.lcs
+as p3/test/p3-test1.asm
+load p3/test/p3-test1.obj
+break set x3000
+continue
+set pc x6000
+set r1 DEQUEUE_POS
+
+break set x600E
+continue
+
+list pc
+check R5 1
+check R6 2
+check R7 2
+next
+next
+
+list pc
+check R5 3
+check R6 4
+check R7 4
+next
+next
+
+list pc
+check R5 5
+check R6 6
+check R7 6
+
+break set x601C
+continue
+
+list pc
+check R5 7
+check R6 8
+check R7 0
+
+check count

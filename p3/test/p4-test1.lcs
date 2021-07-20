@@ -1,0 +1,65 @@
+script p3/test/snake.lcs
+as p3/test/p4-test1.asm
+load p3/test/p4-test1.obj
+break set x3000
+continue
+set pc x6000
+set r1 GET_NEXT
+
+next
+next
+check R5 20
+check R6 11
+
+next
+next
+next
+next
+check R5 19
+check R6 10
+
+next
+next
+next
+check R5 20
+check R6 9
+
+next
+next
+next
+check R5 21
+check R6 10
+
+next
+next
+next
+next
+next
+
+next
+next
+next
+check R5 5
+check R6 7
+
+next
+next
+next
+check R5 6
+check R6 6
+
+next
+next
+next
+check R5 5
+check R6 5
+
+next
+next
+next
+check R5 4
+check R6 6
+
+
+
+check count

@@ -1,0 +1,57 @@
+script p3/ostest/commands.lcs
+as p3/ostest/p3-test.asm
+load p3/ostest/p3-test.obj
+break set x3003
+continue
+set r5 x0
+continue
+check r5 x342D
+continue
+check r5 x26D3
+continue
+check r5 xDE45
+continue
+check r5 xF56E
+continue
+check r5 xBFD4
+continue
+check r5 xDE31
+continue
+check r5 x25DE
+continue
+check r5 xFF45
+continue
+check r5 x34ED
+continue
+check r5 x12E9
+continue
+check r5 x82AB
+continue
+check r5 x08E4
+continue
+check r5 x5400
+continue
+check r5 xED25
+continue
+check r5 x346E
+continue
+check r5 x2300
+continue
+check r5 x3644
+continue
+check r5 x1AE4
+continue
+check r5 x85D4
+continue
+check r5 xED48
+continue
+check r5 x347D
+continue
+check r5 x1234
+continue
+check r5 x4842
+continue
+check r5 xADEF
+continue
+check r5 x35FE
+check count

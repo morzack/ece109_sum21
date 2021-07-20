@@ -1,0 +1,16 @@
+clear
+check reset
+script p3/ostest/p1-test1.lcs
+script p3/ostest/p1-test2.lcs
+script p3/ostest/p1-test3.lcs
+script p3/ostest/p2-test1.lcs
+script p3/ostest/p2-test2.lcs
+script p3/ostest/p2-test3.lcs
+script p3/ostest/p3-test1.lcs
+script p3/ostest/p3-test2.lcs
+script p3/ostest/p4-test1.lcs
+script p3/ostest/p4-test2.lcs
+script p3/ostest/p4-test3.lcs
+script p3/ostest/p4-test4.lcs
+script p3/ostest/p4-test5.lcs
+check cumulative

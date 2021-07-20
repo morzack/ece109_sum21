@@ -1,0 +1,7 @@
+as p3/snakebg.asm
+as p3/snakeOS.asm
+as p3/snake.asm
+reset
+load p3/snakebg.obj
+load p3/snakeOS.obj
+load p3/snake.obj

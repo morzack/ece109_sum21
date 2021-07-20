@@ -1,0 +1,5 @@
+	.ORIG x3000
+	TRAP x42
+	TRAP x42
+	TRAP x42
+	HALT

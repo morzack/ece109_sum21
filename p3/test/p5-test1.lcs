@@ -1,0 +1,28 @@
+script p3/test/snake.lcs
+as p3/test/p5-test1.asm
+load p3/test/p5-test1.obj
+break set x3000
+continue
+set pc x6000
+set r4 CHECK_COLLISION
+
+break set x6010
+continue
+check R5 1
+
+next
+next
+next
+check R5 0
+
+next
+next
+next
+check R5 -1
+
+next
+next
+next
+check R5 1
+
+check count

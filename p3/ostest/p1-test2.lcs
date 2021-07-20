@@ -1,0 +1,21 @@
+script p3/ostest/commands.lcs
+as p3/ostest/p1-test.asm
+load p3/ostest/p1-test.obj
+break set x3000
+continue
+set r0 x5
+set r1 x7
+set r2 x3FC3
+continue
+check xC385 x3FC3
+check xC386 x0000
+check xC387 x0000
+check xC388 x0000
+
+check xC405 x0000
+check xC406 x0000
+check xC407 x0000
+check xC408 x0000
+
+check xD014 x0000
+check count
