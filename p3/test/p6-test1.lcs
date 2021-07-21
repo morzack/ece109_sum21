@@ -1,0 +1,13 @@
+script p3/test/snake.lcs
+as p3/test/p6-test1.asm
+load p3/test/p6-test1.obj
+break set x3000
+continue
+set pc x6000
+set r5 ADVANCE_SNAKE
+break set TRAP_HALT
+break set x6018
+continue
+check pc TRAP_HALT
+check xD450 x0000
+check count

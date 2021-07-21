@@ -1,10 +1,13 @@
-;;;This tests each type of collision in the game
+;;;This test checks for a halt when advancing the snake
+;;;into a non-apple collision
 
 	.ORIG x6000
 	LEA R3, TEST_SNAKE
 
 	LDR R0, R3, 6
 	LDR R1, R3, 7
+	LDR R2, R3, 5
+	TRAP x40
 
 	ADD R1, R1, -1
 	LD R2, TEST_APPLE_COLOR
@@ -21,24 +24,16 @@
 	TRAP x40
 
 	ADD R0, R3, 0
-	JSRR R4
+	AND R1, R1, 0	;R1 = left
+	ADD R2, R1, 1	;R2 = up
+	ADD R3, R1, 2	;R3 = right
+	ADD R4, R1, 3	;R4 = down
 
-	AND R1, R1, 0
-	STR R1, R0, 4
-	JSRR R4
+	STR R3, R0, 4	; move right into "arbitrary color"
+	JSRR R5
 
-	ADD R1, R1, 1
-	STR R1, R0, 4
-	JSRR R4
-
-	ADD R1, R1, 1
-	STR R1, R0, 4
-	JSRR R4
-
-
-	HALT
-
-TEST_APPLE_COLOR:      	.FILL x7C00
+			.FILL x0000
+TEST_APPLE_COLOR     .FILL x7C00
 ARBITRARY_COLOR:	.FILL x6354
 
 TEST_SNAKE:

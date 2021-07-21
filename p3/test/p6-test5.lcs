@@ -1,0 +1,38 @@
+script p3/test/snake.lcs
+as p3/test/p6-test5.asm
+load p3/test/p6-test5.obj
+break set x3000
+continue
+set pc x6000
+set r5 ADVANCE_SNAKE
+break set x6021
+continue
+check xC391 x0000
+check xC310 x0000
+check xC311 x0000
+
+check xC390 x8AA8
+check xC410 x8AA8
+check xC411 x8AA8
+check xC491 x8AA8
+check xC492 x8AA8
+check xC510 x0000
+
+list pc
+check R5 14
+next
+next
+next
+list pc
+check R5 16
+next
+list pc
+check R5 7
+next
+list pc
+check R5 0
+next
+list pc
+check R5 6
+
+check count

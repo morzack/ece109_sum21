@@ -1,10 +1,14 @@
-;;;This tests each type of collision in the game
+;;;This test checks advancing the snake with
+;;;no collisions until the grow count reaches zero,
+;;;at which point the snake's tail must be erased.
 
 	.ORIG x6000
 	LEA R3, TEST_SNAKE
 
 	LDR R0, R3, 6
 	LDR R1, R3, 7
+	LDR R2, R3, 5
+	TRAP x40
 
 	ADD R1, R1, -1
 	LD R2, TEST_APPLE_COLOR
@@ -21,24 +25,29 @@
 	TRAP x40
 
 	ADD R0, R3, 0
-	JSRR R4
+	AND R1, R1, 0	;R1 = left
+	ADD R2, R1, 1	;R2 = up
+	ADD R3, R1, 2	;R3 = right
+	ADD R4, R1, 3	;R4 = down
 
-	AND R1, R1, 0
 	STR R1, R0, 4
-	JSRR R4
+	JSRR R5
+	JSRR R5
+	JSRR R5
+	JSRR R5
+	JSRR R5
 
-	ADD R1, R1, 1
-	STR R1, R0, 4
-	JSRR R4
-
-	ADD R1, R1, 1
-	STR R1, R0, 4
-	JSRR R4
-
-
+	LDR R5, R0, 1		;R5 contains headoffset
+	ADD R6, R5, R0
+	ADD R6, R6, 6
+	LDR R5, R6, 0		;R5 contains headx
+	LDR R5, R6, 1		;R5 contains heady
+	LDR R5, R0, 3		;R5 contains growcount
+	LDR R5, R0, 0		;R5 contains tailcount
 	HALT
 
-TEST_APPLE_COLOR:      	.FILL x7C00
+			.FILL x0000
+TEST_APPLE_COLOR     .FILL x7C00
 ARBITRARY_COLOR:	.FILL x6354
 
 TEST_SNAKE:

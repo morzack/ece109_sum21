@@ -42,10 +42,10 @@ NEW_POSITION:		.FILL x00FE
 TEST_SNAKE:
         .FILL x0000  ; HeadOff +0
         .FILL x0000  ; TailOff +1
-		.FILL x0000  ; size
-        .FILL x4     ; GrowCount +2
-        .FILL x3     ; Direction +3
-        .FILL x8AA8  ; Color +4
-        .FILL 20     ; Start of Position Queue +5
+		.FILL x0002	 ; size +2
+        .FILL x4     ; GrowCount +3
+        .FILL x3     ; Direction +4
+        .FILL x8AA8  ; Color +5
+        .FILL 20     ; Start of Position Queue +6
         .FILL 10
         .BLKW 254 ;2x128-2

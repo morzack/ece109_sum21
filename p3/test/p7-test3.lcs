@@ -1,0 +1,27 @@
+script p3/test/snake.lcs
+break set x3000
+continue
+set xfe0a 1
+input p3/test/p7-test3.in
+continue
+
+check xE9AD x7C00
+
+check xC514 x8AA8
+check xC515 x8AA8
+check xC594 x8AA8
+check xC595 x8AA8
+
+check xC513 x0000
+check xC516 x0000
+check xC593 x0000
+check xC596 x0000
+
+check xC614 x0000
+check xC615 x0000
+check x4594 x0000
+check x4595 x0000
+
+check PC    x0216
+
+check count

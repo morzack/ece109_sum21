@@ -1,0 +1,9 @@
+script p3/test/snake.lcs
+break set x3000
+continue
+set xfe0a 1
+input p3/test/p7-test5.in
+continue
+check PC x0216
+script p3/test/p7-test5-vmem.lcs
+check count
