@@ -44,8 +44,8 @@
 //	TRAP_GETC         021C
 //	TIM_INIT          0219
 //	__PUTS            0272
-//	LOW_8_BITS        0218
-//	MPR_INIT          021A
+//	LOW_8_BITS        021A
+//	MPR_INIT          0218
 //	TRAP_OUT_WAIT     0221
 //	TRAP_PUTS_DONE    022F
 //	TRAP_PUTSP_DONE   0258
