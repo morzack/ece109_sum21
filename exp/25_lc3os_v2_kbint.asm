@@ -65,7 +65,7 @@
         .FILL BAD_TRAP          ; x3D
         .FILL BAD_TRAP          ; x3E
         .FILL BAD_TRAP          ; x3F
-        .FILL BAD_TRAP          ; x40
+        .FILL TRAP_Q_RETRIEVE   ; x40
         .FILL BAD_TRAP          ; x41
         .FILL BAD_TRAP          ; x42
         .FILL BAD_TRAP          ; x43
@@ -528,6 +528,16 @@ OS_START
         LD R0, TIM_INIT
         STI R0, OS_TIR
 
+        ; set keyboard interrupt
+        LDI R0, OS_KBSR
+        LD R1, INT_MASK
+        NOT R0, R0
+        NOT R1, R1
+        AND R0, R0, R1
+        NOT R0, R0
+        STI R0, OS_KBSR
+        AND R1, R1, #0
+
         ; start running user code (clear Privilege bit w/ RTT)
         LD R7, USER_CODE_ADDR
         RTT
@@ -556,6 +566,8 @@ MPR_INIT        .FILL x0FF8     ; user can access x3000 to xBFFF
 TIM_INIT        .FILL #40       ; number of milliseconds for timer
 LOW_8_BITS      .FILL x00FF     ; bitmask for PUTSP
 USER_CODE_ADDR  .FILL x3000     ; user code starts at x3000
+
+INT_MASK        .FILL x4000
 
 
 ;;; GETC - Read a single character of input from keyboard device into R0
@@ -671,6 +683,12 @@ TRAP_HALT
         STI R0, OS_MCR          ; halt!
         BRnzp OS_START          ; restart machine
 
+;;; Q_RETRIEVE - trap handler for retrieving keyboard info from queue
+TRAP_Q_RETRIEVE
+        JSR REMOVE              ; remove value from queue, place in R0
+        ; could check for underflow here in R5
+        RTT
+
 
 ;;; BAD_TRAP - code to execute for undefined trap
 BAD_TRAP
@@ -681,6 +699,92 @@ BAD_TRAP
 ;;; actually be any interrupts, so this will never actually get called.
 BAD_INT
         RTI
+
+;;; INT_KB - keyboard interrupt service routine
+INT_KB
+        LDI R0, OS_KBDR ; read value from data register
+        JSR INSERT      ; insert value in the queue
+        ; could check R5 here to see if queue is full
+        RTI
+
+; ----------------------- INTERNAL QUEUE SUBROUTINES ------------------------- ;
+; --------------------- INSERT/REMOVE QUEUE SUBROUTINES ---------------------- ;
+; Description: insert/remove subroutines for queue.
+; Inputs:
+;   R0 - value to be inserted into queue at rear (INSERT only)
+; Outputs:
+;   R5 - 0 (success) or 1 (failure)
+;   R0 - value to be remove from queue at front (REMOVE only)
+; NOTE: update FIRST/LAST based on start point and end point of queue
+
+; insert - increment (with wraparound) rear pointer and store value
+INSERT  ST R1, Q_R1     ; save register
+        ST R2, Q_R2     ; save register
+        ST R3, Q_R3     ; save register
+        ST R4, Q_R4     ; save register
+        LD R3, HD_PTR   ; load head pointer
+        LD R4, TL_PTR   ; load tail pointer
+
+        AND R5, R5, #0  ; set R5 to success code
+        ADD R2, R4, #0  ; R2=rear to restore if overflow (changed from book)
+        LD R1, NEG_LST  ; load negated last memory location
+        ADD R1, R1, R4  ; R1 = rear - last
+        BRnp SKIP1      ; skip wrap around
+        LD R4, FIRST    ; wraparound, rear = first memory location
+        BRnzp SKIP2     ; unconditional branch
+SKIP1   ADD R4, R4, #1  ; if no wrap, increment rear
+SKIP2   NOT R1, R4      ; negate rear, move to R1
+        ADD R1, R1, #1  ; negate rear
+        ADD R1, R1, R3  ; compare front and rear
+        BRz FULL        ; if zero, queue is full overflow
+        STR R0, R4, #0  ; perform insert
+        BRnzp DONE      ; unconditional branch
+FULL    ADD R4, R2, #0  ; restore initial rear in R2 (changed from book)
+        ADD R5, R5, #1  ; return error value
+        BRnzp DONE
+
+; remove - increment (with wraparound) front pointer and remove value
+REMOVE  ST R1, Q_R1     ; save register
+        ST R2, Q_R2     ; save register
+        ST R3, Q_R3     ; save register
+        ST R4, Q_R4     ; save register
+        LD R3, HD_PTR   ; load head pointer
+        LD R4, TL_PTR   ; load tail pointer
+
+        AND R5, R5, #0  ; set R5 to success code
+        NOT R1, R4      ; negate rear, move to R1
+        ADD R1, R1, #1  ; negate rear
+        ADD R1, R1, R3  ; compare front and rear
+        BRz EMPTY       ; if zero, queue is empty, underflow
+        LD R1, NEG_LST  ; not empty, load negated last
+        ADD R1, R1, R3  ; R1 = front - last
+        BRnp SKIP5      ; front!=last, no need to wraparound
+        LD R3, FIRST    ; wraparound, front = first memory location
+        BRnzp SKIP6     ; skip increment
+SKIP5   ADD R3, R3, #1  ; increment front
+SKIP6   LDR R0, R3, #0  ; perform remove
+        BRnzp DONE      ; skip failure code
+EMPTY   ADD R5, R5, #1  ; set failure code
+
+DONE    ST R3, HD_PTR   ; save head pointer
+        ST R4, TL_PTR   ; save tail pointer
+        LD R1, Q_R1     ; restore register
+        LD R2, Q_R2     ; restore register
+        ST R3, Q_R3     ; restore register
+        ST R4, Q_R4     ; restore register
+        RET
+
+Q_R1    .BLKW 1
+Q_R2    .BLKW 1
+Q_R3    .BLKW 1
+Q_R4    .BLKW 1
+
+HD_PTR  .FILL x2000     ; head/front pointer - where values are removed/dequeued
+TL_PTR  .FILL x2000     ; tail/rear pointer - where values are inserted/enqueued
+FIRST   .FILL x2000     ; starting address of queue storage
+NEG_1ST .FILL xE000     ; negative of FIRST
+LAST    .FILL x2040     ; ending address of queue storage - queue size 64
+NEG_LST .FILL xDFC0     ; negative of LAST
 
 
 ; ------------------------- INTERNAL OS SUBROUTINES -------------------------- ;
